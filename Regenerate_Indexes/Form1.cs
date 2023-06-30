@@ -7,39 +7,44 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace Regenerate_Indexes
 {
     public partial class Form1 : Form
     {
 
+        private string serverName;
+        private string databaseName;
+        private string procedureName;
+        Form2 form2 = new Form2();
         ConnectionDB connection;
 
         public Form1()
         {
             InitializeComponent();
-            initializeServer();
+            form2.ConnectionDataReceived += Form2_ConnectionDataReceived;
+            form2.ShowDialog();
         }
 
-        void initializeServer()
+        private void Form2_ConnectionDataReceived(string serverName, string databaseName, string procedureName)
         {
-            string server = ".";
-            string database = "Club_Nautico";
 
-            connection = new ConnectionDB(server, database);
+            connection=new ConnectionDB(serverName,databaseName, procedureName);
+            form2.ConnectionDataReceived -= Form2_ConnectionDataReceived;
         }
 
         private void buttonRegenerateIndexes_Click(object sender, EventArgs e)
         {
-            if (connection.executeProcedure(
-                "regenerate_indexes"))
-            {
-                MessageBox.Show("Los índices se regeneraron con exito");
-            }
-            else
-            {
-                MessageBox.Show("Ocurrio un error al regenerar los indices");
-            }
+                if (connection.executeProcedure())
+                {
+                    MessageBox.Show("Índices regenerados con éxito");
+                }
+                else
+                {
+                    MessageBox.Show("Ha ocurrido un error inesperado");
+                }
+            
         }
     }
 }

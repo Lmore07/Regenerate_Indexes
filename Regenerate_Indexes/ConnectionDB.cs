@@ -11,13 +11,15 @@ namespace Regenerate_Indexes
     internal class ConnectionDB
     {
         private string stringConnection;
+        private string procedureName;
 
-        public ConnectionDB(string server, string db)
+        public ConnectionDB(string server, string db, string procedure)
         {
             stringConnection = $"Server={server};Database={db};Trusted_Connection=True;";
+            procedureName = procedure;
         }
 
-        public bool executeProcedure(string procedure)
+        public bool executeProcedure()
         {
             try
             {
@@ -25,7 +27,7 @@ namespace Regenerate_Indexes
                 {
                     connectionDB.Open();
 
-                    using (SqlCommand sqlCommand = new SqlCommand(procedure, connectionDB))
+                    using (SqlCommand sqlCommand = new SqlCommand(procedureName, connectionDB))
                     {
                         sqlCommand.CommandType = CommandType.StoredProcedure;
                         sqlCommand.ExecuteNonQuery();
